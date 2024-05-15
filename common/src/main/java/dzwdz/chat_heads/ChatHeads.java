@@ -143,7 +143,7 @@ public class ChatHeads {
         Component sender = getSenderDecoration(bound);
         if (sender != null) {
             // StyledNicknames compatibility: try to get player info from /tell click event
-            Optional<String> tellReceiver = getTellReceiver(sender);
+            Optional<String> tellReceiver = getClickableNickname(sender);
             if (tellReceiver.isPresent()) {
                 PlayerInfo player = getPlayerInfo(tellReceiver.get(), connection, profileNameCache, nicknameCache);
                 if (player != null) return player;
@@ -153,11 +153,13 @@ public class ChatHeads {
             return getPlayerInfo(cleanSender, connection, profileNameCache, nicknameCache);
         } else {
             // StyledNicknames compatibility: try to get player info from /tell click event
-            Optional<String> tellReceiver = getTellReceiver(message);
+            Optional<String> tellReceiver = getClickableNickname(message);
             if (tellReceiver.isPresent()) {
                 PlayerInfo player = getPlayerInfo(tellReceiver.get(), connection, profileNameCache, nicknameCache);
                 if (player != null) return player;
             }
+
+            /* Rift: Disable this heuristic because we do not want chat heads to appear if player is just mentionned in chat
 
             // check each word of the message consisting only out of allowed player name characters
             for (String word : message.getString().split(NON_NAME_REGEX)) {
@@ -166,11 +168,14 @@ public class ChatHeads {
                 PlayerInfo player = getPlayerInfo(word, connection, profileNameCache, nicknameCache);
                 if (player != null) return player;
             }
+            */
+
         }
 
         return null;
     }
 
+    /*
     private static Optional<String> getTellReceiver(Component component) {
         return component.visit((style, string) -> {
             ClickEvent clickEvent = style.getClickEvent();
@@ -185,6 +190,20 @@ public class ChatHeads {
             }
 
             return Optional.empty();
+        }, Style.EMPTY);
+    }
+    */
+
+    private static Optional<String> getClickableNickname(Component component) {
+        return component.visit((style, string) -> {
+           ClickEvent clickEvent = style.getClickEvent();
+
+           if(clickEvent != null) {
+               String nickname = clickEvent.getValue();
+               return Optional.of(nickname.replaceAll(NON_NAME_REGEX, ""));
+           }
+
+           return Optional.empty();
         }, Style.EMPTY);
     }
 
