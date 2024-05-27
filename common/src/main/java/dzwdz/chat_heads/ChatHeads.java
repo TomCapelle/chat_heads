@@ -200,7 +200,8 @@ public class ChatHeads {
 
            if(clickEvent != null) {
                String nickname = clickEvent.getValue();
-               return Optional.of(nickname.replaceAll(NON_NAME_REGEX, ""));
+
+               return nickname.startsWith("/tell") ? Optional.empty() : Optional.of(nickname.replaceAll(NON_NAME_REGEX, ""));
            }
 
            return Optional.empty();
