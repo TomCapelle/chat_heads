@@ -94,6 +94,7 @@ public class ChatHeads {
             return;
         }
 
+        /* Do not give player a choice: We will use heuristic everytime
         if (ChatHeads.CONFIG.senderDetection() != HEURISTIC_ONLY) {
             if (playerInfo != null) {
                 ChatHeads.lastSender = playerInfo;
@@ -108,6 +109,7 @@ public class ChatHeads {
                 return;
             }
         }
+        */
 
         // use heuristic to find sender
         ChatHeads.lastSender = ChatHeads.detectPlayer(message, bound);
